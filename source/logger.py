@@ -33,13 +33,13 @@ class Logger:
             Init function.
         """
         if not isinstance(name, str):
-            raise TypeError("Name must be str.")
+            raise TypeError(f"Name must be str instead of {type(name)}.")
         if not isinstance(level, int):
-            raise TypeError("Level must be str.")
+            raise TypeError(f"Level must be str instead of {type(level)}.")
         if level not in [DEBUG, INFO, WARNING, ERROR]:
-            raise ValueError("Level must be in [DEBUG, INFO, WARNING, ERROR]")
+            raise ValueError(f"Level must be in [DEBUG, INFO, WARNING, ERROR] instead of {level}.")
         if not isinstance(log_format, str):
-            raise TypeError("log_format must be str.")
+            raise TypeError(f"log_format must be str instead of {type(log_format)}.")
         self.name = name
         self.level = level
         self.format = log_format

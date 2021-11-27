@@ -7,7 +7,12 @@
 """
 
 ## Imports.
+import sys
+from os.path import join, abspath
 import pytest
+
+## Environment
+sys.path.append(join(abspath('.'), 'source'))
 
 ## Project modules.
 from logger import (
@@ -24,20 +29,21 @@ class TestLogger:
         Test the class Logger.
     """
 
-    def test_get_name(self, logger_name='My new logger'):
+    def test_get_name(self):
         """ First test. """
         with pytest.raises(TypeError):
             Logger(name=1)
             Logger(name=True)
             Logger(name=[])
             Logger(name={})
+        logger_name = 'My new logger'
         logger = Logger()
         assert logger.get_name() == 'My Own Logger'
         logger = Logger(name=logger_name)
         assert logger.get_name() == logger_name
 
 
-    def test_get_level(self, logger_level=ERROR):
+    def test_get_level(self):
         """ First test. """
         with pytest.raises(TypeError):
             Logger(level='')
@@ -48,19 +54,21 @@ class TestLogger:
             Logger(level=1)
             Logger(level=11)
             Logger(level=42)
+        logger_level = ERROR
         logger = Logger()
         assert logger.get_level() == INFO
         logger = Logger(level=logger_level)
         assert logger.get_level() == ERROR
 
 
-    def test_get_format(self, logger_format="my new format"):
+    def test_get_format(self):
         """ First test. """
         with pytest.raises(TypeError):
             Logger(log_format=1)
             Logger(name=True)
             Logger(name=[])
             Logger(name={})
+        logger_format = "my new format"
         logger = Logger()
         assert logger.get_format() == "%(asctime)s %(message)s"
         logger = Logger(log_format=logger_format)
