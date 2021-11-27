@@ -33,7 +33,7 @@ unittest:
 
 .PHONY: quality ## Get the quality of the code
 quality:
-	find source/ tests/ -type f -name "*.py" | xargs flake8
+	find source/ tests/ -type f -name "*.py" | xargs flake8 --count
 
 
 .PHONY: clean ## Clean the project

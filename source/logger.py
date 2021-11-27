@@ -6,7 +6,7 @@
     Creating a logger
 """
 
-## Imports
+# Imports
 from logging import (
     basicConfig,
     DEBUG,
@@ -14,18 +14,13 @@ from logging import (
     WARNING,
     ERROR
 )
-## Project modules
+# Project modules
 
-## Environment
+# Environment
 
-## Functions
 
-## Classes
 class Logger:
-    """
-        Homemade logger.
-    """
-
+    """ Homemade logger. """
     def __init__(self, name="My Own Logger",
                  level=INFO,
                  log_format="%(asctime)s %(message)s"):
@@ -36,7 +31,10 @@ class Logger:
             raise TypeError(f"Name must be str instead of {type(name)}.")
         if not isinstance(level, int):
             raise TypeError(f"Level must be str instead of {type(level)}.")
-        if level not in [DEBUG, INFO, WARNING, ERROR]:
+        if level not in [DEBUG,
+                         INFO,
+                         WARNING,
+                         ERROR]:
             raise ValueError(f"Level must be in [DEBUG, INFO, WARNING, ERROR] instead of {level}.")
         if not isinstance(log_format, str):
             raise TypeError(f"log_format must be str instead of {type(log_format)}.")
@@ -44,7 +42,6 @@ class Logger:
         self.level = level
         self.format = log_format
         self.logger = self.create_logger()
-
 
     def get_name(self):
         """
@@ -54,7 +51,6 @@ class Logger:
         """
         return self.name
 
-
     def get_level(self):
         """
         Get the logger level.
@@ -62,7 +58,6 @@ class Logger:
         :return: int - the logging level
         """
         return self.level
-
 
     def get_format(self):
         """
@@ -72,7 +67,6 @@ class Logger:
         """
         return self.format
 
-
     def get_logger(self):
         """
         Get the logger object.
@@ -80,7 +74,6 @@ class Logger:
         :return: <Logger> - the logger
         """
         return self.logger
-
 
     def create_logger(self):
         """ Create the logger object using the init config. """

@@ -6,24 +6,22 @@
     Test the logger.
 """
 
-## Imports.
+# Imports.
 import sys
 from os.path import join, abspath
 import pytest
 
-## Environment
+# Environment
 sys.path.append(join(abspath('.'), 'source'))
 
-## Project modules.
+# Project modules.
 from logger import (
     Logger,
     INFO,
     ERROR,
 )
 
-## Functions.
 
-## Classes.
 class TestLogger:
     """
         Test the class Logger.
@@ -42,7 +40,6 @@ class TestLogger:
         logger = Logger(name=logger_name)
         assert logger.get_name() == logger_name
 
-
     def test_get_level(self):
         """ First test. """
         with pytest.raises(TypeError):
@@ -59,7 +56,6 @@ class TestLogger:
         assert logger.get_level() == INFO
         logger = Logger(level=logger_level)
         assert logger.get_level() == ERROR
-
 
     def test_get_format(self):
         """ First test. """
