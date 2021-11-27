@@ -38,4 +38,4 @@ quality:
 
 .PHONY: clean ## Clean the project
 clean:
-	ls -a -R | grep -e "__pycache__" -e ".pytest_cache" -e "venv" | xargs rm -rf
+	find . -type d | grep -e "__pycache__" -e ".pytest_cache" -e "venv" | xargs rm -rf
