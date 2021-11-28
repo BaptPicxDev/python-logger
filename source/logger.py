@@ -100,28 +100,13 @@ class HomemadeLogger:
         handler.setFormatter(Formatter(self.get_format()))
         logger.addHandler(handler)
         return logger
-    #
-    # def log(self, message):
-    #     """ Log a specific message to the logger with INFO level. """
-    #     self.get_logger().log(INFO, message)
-    #
-    # def debug(self, message):
-    #     """ Log a specific message to the logger with DEBUG level. """
-    #     self.get_logger().log(DEBUG, message)
-    #
-    # def warning(self, message):
-    #     """ Log a specific message to the logger with WARNING level. """
-    #     self.get_logger().log(WARNING, message)
-    #
-    # def error(self, message):
-    #     """ Log a specific message to the logger with ERROR level. """
-    #     self.get_logger().log(ERROR, message)
 
 
 class HomemadeTimedRotatingFileHandler:
     """ Homemade TimedRotatingFileHandler. """
     def __init__(self, filename='log', when='h', interval=1,
-                 log_format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"):
+                 log_format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                 level=INFO, log_extension=None):
         """
             Init function.
         """
@@ -133,6 +118,15 @@ class HomemadeTimedRotatingFileHandler:
             raise TypeError(f"Interval must be int instead of {type(interval)}.")
         if not isinstance(log_format, str):
             raise TypeError(f"log_format must be str instead of {type(log_format)}.")
+        if not isinstance(level, int):
+            raise TypeError(f"Level must be str instead of {type(level)}.")
+        if log_extension and not isinstance(log_extension, str):
+            raise TypeError(f"log_file_name must be str instead of {type(log_extension)}.")
+        if level not in [DEBUG,
+                         INFO,
+                         WARNING,
+                         ERROR]:
+            raise ValueError(f"Level must be in [DEBUG, INFO, WARNING, ERROR] instead of {level}.")
         if when.upper() not in ['S', 'M', 'H', 'D',
                                 'W0', 'W1', 'W2', 'W3',
                                 'W4', 'W5', 'W6', 'MIDNIGHT']:
@@ -143,6 +137,8 @@ class HomemadeTimedRotatingFileHandler:
         self.when = when.upper()
         self.interval = interval
         self.format = log_format
+        self.level = level
+        self.log_extension = log_extension
         self.handler = self.build_handler()
 
     def get_filename(self):
@@ -169,6 +165,30 @@ class HomemadeTimedRotatingFileHandler:
         """
         return self.interval
 
+    def get_format(self):
+        """
+        Get the handler format.
+
+        :return: str - the handler format
+        """
+        return self.format
+
+    def get_level(self):
+        """
+        Get the handler level.
+
+        :return: int - the handler level
+        """
+        return self.level
+
+    def get_log_extension(self):
+        """
+        Get the handler file_extension.
+
+        :return: int
+        """
+        return self.log_extension
+
     def get_handler(self):
         """
         Get the TimedRotatingFileHandler object.
@@ -178,6 +198,11 @@ class HomemadeTimedRotatingFileHandler:
         return self.handler
 
     def build_handler(self):
-        return TimedRotatingFileHandler(filename=self.get_filename(),
-                                        when=self.get_when(),
-                                        interval=self.get_interval())
+        handler = TimedRotatingFileHandler(filename=self.get_filename(),
+                                           when=self.get_when(),
+                                           interval=self.get_interval())
+        handler.setLevel(self.get_level())
+        handler.setFormatter(Formatter(self.get_format()))
+        if self.get_log_extension():
+            handler.namer = lambda name: name + self.get_log_extension()
+        return handler
