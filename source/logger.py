@@ -49,7 +49,7 @@ class HomemadeLogger:
         self.level = level
         self.format = log_format
         self.handlers = handlers
-        self.logger = self.create_logger()
+        self.create_logger()
 
     def get_name(self):
         """
@@ -89,24 +89,31 @@ class HomemadeLogger:
 
         :return: <Logger> - the logger
         """
-        return self.logger
+        return getLogger(self.get_name())
 
     def create_logger(self):
         """ Create the logger object using the init config. """
         logger = getLogger(self.get_name())
         logger.setLevel(self.get_level())
-        handler = StreamHandler()
-        handler.setLevel(self.get_level())
-        handler.setFormatter(Formatter(self.get_format()))
-        logger.addHandler(handler)
-        return logger
+        stream_handler = StreamHandler()
+        stream_handler.setLevel(self.get_level())
+        stream_handler.setFormatter(Formatter(self.get_format()))
+        logger.addHandler(stream_handler)
+        for handler in self.get_handlers():
+            logger.addHandler(handler)
+
+    def log(self,message):
+        """ log a message with INFO level. """
+        if not isinstance(message, str):
+            raise TypeError(f'Message must be str instead of {type(message)}')
+        self.get_logger().log(INFO, message)
 
 
 class HomemadeTimedRotatingFileHandler:
     """ Homemade TimedRotatingFileHandler. """
     def __init__(self, filename='log', when='h', interval=1,
                  log_format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-                 level=INFO, log_extension=None):
+                 level=INFO, log_extension=None, suffix=None):
         """
             Init function.
         """
@@ -122,6 +129,8 @@ class HomemadeTimedRotatingFileHandler:
             raise TypeError(f"Level must be str instead of {type(level)}.")
         if log_extension and not isinstance(log_extension, str):
             raise TypeError(f"log_file_name must be str instead of {type(log_extension)}.")
+        if suffix and not isinstance(suffix, str):
+            raise TypeError(f"Suffix must be str instead of {type(suffix)}.")
         if level not in [DEBUG,
                          INFO,
                          WARNING,
@@ -139,6 +148,7 @@ class HomemadeTimedRotatingFileHandler:
         self.format = log_format
         self.level = level
         self.log_extension = log_extension
+        self.suffix = suffix
         self.handler = self.build_handler()
 
     def get_filename(self):
@@ -189,6 +199,14 @@ class HomemadeTimedRotatingFileHandler:
         """
         return self.log_extension
 
+    def get_suffix(self):
+        """
+        Get the handler suffix.
+
+        :return: str
+        """
+        return self.suffix
+
     def get_handler(self):
         """
         Get the TimedRotatingFileHandler object.
@@ -205,4 +223,6 @@ class HomemadeTimedRotatingFileHandler:
         handler.setFormatter(Formatter(self.get_format()))
         if self.get_log_extension():
             handler.namer = lambda name: name + self.get_log_extension()
+        if self.get_suffix():
+            handler.suffix = self.get_suffix()
         return handler
