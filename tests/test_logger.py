@@ -181,6 +181,10 @@ class TestHomemadeTimedRotatingFileHandler:
         self.test_handler_level = ERROR
         self.test_handler_level_1 = DEBUG
         self.test_log_folder = 'logs/'
+        self.test_log_extension = 'ninja'
+        self.test_log_extension_1 = 'another extension'
+        self.test_suffix = "%Y-%m-%d"
+        self.test_suffix_1 = "%H:%M:%S"
         if not exists(self.test_log_folder):
             mkdir(self.test_log_folder)
 
@@ -276,6 +280,34 @@ class TestHomemadeTimedRotatingFileHandler:
         handler = HomemadeTimedRotatingFileHandler(level=self.test_handler_level_1)
         assert handler.get_level() == self.test_handler_level_1
 
+    def test_get_log_extension(self):
+        """ Test the HomemadeLogger.get_log_extension function. """
+        with pytest.raises(TypeError):
+            HomemadeTimedRotatingFileHandler(log_extension=1)
+            HomemadeTimedRotatingFileHandler(level=True)
+            HomemadeTimedRotatingFileHandler(level=[])
+            HomemadeTimedRotatingFileHandler(level={})
+        handler = HomemadeTimedRotatingFileHandler()
+        assert not handler.get_log_extension()
+        handler = HomemadeTimedRotatingFileHandler(log_extension=self.test_log_extension)
+        assert handler.get_log_extension() == self.test_log_extension
+        handler = HomemadeTimedRotatingFileHandler(log_extension=self.test_log_extension_1)
+        assert handler.get_log_extension() == self.test_log_extension_1
+
+    def test_get_suffix(self):
+        """ Test the HomemadeLogger.get_suffix function. """
+        with pytest.raises(TypeError):
+            HomemadeTimedRotatingFileHandler(suffix=1)
+            HomemadeTimedRotatingFileHandler(suffix=True)
+            HomemadeTimedRotatingFileHandler(suffix=[])
+            HomemadeTimedRotatingFileHandler(suffix={})
+        handler = HomemadeTimedRotatingFileHandler()
+        assert not handler.get_suffix()
+        handler = HomemadeTimedRotatingFileHandler(suffix=self.test_suffix)
+        assert handler.get_suffix() == self.test_suffix
+        handler = HomemadeTimedRotatingFileHandler(suffix=self.test_suffix_1)
+        assert handler.get_suffix() == self.test_suffix_1
+
     def test_get_handler(self):
         """ Test the HomemadeTimedRotatingFileHandler.get_handler function. """
         handler = HomemadeTimedRotatingFileHandler()
@@ -317,3 +349,8 @@ class TestHomemadeTimedRotatingFileHandler:
                                          when='S',
                                          interval=5)
         assert exists('log')
+        HomemadeTimedRotatingFileHandler(filename='log',
+                                         when='S',
+                                         interval=5,
+                                         log_extension='extension')
+
